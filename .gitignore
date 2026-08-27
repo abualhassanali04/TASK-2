@@ -1,0 +1,38 @@
+## .NET Core / Visual Studio build output
+bin/
+obj/
+
+## Visual Studio files
+.vs/
+*.user
+*.suo
+
+## Rider / JetBrains
+.idea/
+
+## VS Code
+.vscode/
+
+## NuGet
+*.nupkg
+**/packages/*
+!**/packages/build/
+
+## EF Core migrations should NOT be ignored — keep them tracked in git
+# (Migrations/ folder is intentionally not listed here)
+
+## Database files (if using SQLite locally)
+*.db
+*.db-shm
+*.db-wal
+
+## OS files
+.DS_Store
+Thumbs.db
+
+## Environment / secrets
+appsettings.Development.json
+*.env
+
+## Logs
+*.log
