@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace ProductCatalogApi.Models
 {
     public class Product
@@ -9,6 +11,8 @@ namespace ProductCatalogApi.Models
         public DateTime CreatedAt { get; set; }
 
         public int CategoryId { get; set; }
-        public Category Category { get; set; }
+
+        [JsonIgnore]
+        public Category? Category { get; set; }
     }
 }
