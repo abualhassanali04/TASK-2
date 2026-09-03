@@ -1,7 +1,16 @@
 using Microsoft.EntityFrameworkCore;
 using ProductCatalogApi.Data;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// أضف هذا السطر — يفعّل Serilog كنظام Logging
+builder.Host.UseSerilog((context, config) =>
+{
+    config
+        .WriteTo.Console()
+        .WriteTo.File("Logs/log-.txt", rollingInterval: RollingInterval.Day);
+});
 
 // Add services to the container.
 builder.Services.AddControllers();

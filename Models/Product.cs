@@ -1,5 +1,3 @@
-using System.Text.Json.Serialization;
-
 namespace ProductCatalogApi.Models
 {
     public class Product
@@ -12,7 +10,6 @@ namespace ProductCatalogApi.Models
 
         public int CategoryId { get; set; }
 
-        [JsonIgnore]
         public Category? Category { get; set; }
     }
 }

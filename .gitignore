@@ -36,3 +36,4 @@ appsettings.Development.json
 
 ## Logs
 *.log
+Logs/
