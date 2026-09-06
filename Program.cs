@@ -4,7 +4,6 @@ using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// أضف هذا السطر — يفعّل Serilog كنظام Logging
 builder.Host.UseSerilog((context, config) =>
 {
     config
@@ -15,14 +14,22 @@ builder.Host.UseSerilog((context, config) =>
 // Add services to the container.
 builder.Services.AddControllers();
 
+// جديد: يفعّل اكتشاف الـ endpoints تلقائياً
+builder.Services.AddEndpointsApiExplorer();
+
+// جديد: يولّد مواصفات Swagger
+builder.Services.AddSwaggerGen();
+
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
+    app.UseSwagger();
+
+    app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();

@@ -19,23 +19,55 @@ public class ProductsController : ControllerBase
         _logger = logger;
     }
 
-    [HttpGet]
-    public async Task<ActionResult<IEnumerable<ProductDto>>> GetProducts()
+    // GET: api/products?page=1&pageSize=10&search=laptop&categoryId=1&minPrice=100
+[HttpGet]
+public async Task<ActionResult<PagedResultDto<ProductDto>>> GetProducts(
+    int page = 1,
+    int pageSize = 10,
+    string? search = null,
+    int? categoryId = null,
+    decimal? minPrice = null)
+{
+    if (page < 1) page = 1;
+    if (pageSize < 1 || pageSize > 100) pageSize = 10;
+
+    var query = _context.Products.Include(p => p.Category).AsQueryable();
+
+    if (!string.IsNullOrWhiteSpace(search))
+        query = query.Where(p => p.Name.ToLower().Contains(search.ToLower()));
+
+    if (categoryId.HasValue)
+        query = query.Where(p => p.CategoryId == categoryId.Value);
+
+    if (minPrice.HasValue)
+        query = query.Where(p => p.Price >= minPrice.Value);
+
+    var totalCount = await query.CountAsync();
+
+    var products = await query
+        .OrderBy(p => p.Id)
+        .Skip((page - 1) * pageSize)
+        .Take(pageSize)
+        .Select(p => new ProductDto
+        {
+            Id = p.Id,
+            Name = p.Name,
+            Price = p.Price,
+            Stock = p.Stock,
+            CreatedAt = p.CreatedAt,
+            CategoryId = p.CategoryId,
+            CategoryName = p.Category.Name
+        })
+        .ToListAsync();
+
+    return new PagedResultDto<ProductDto>
     {
-        return await _context.Products
-            .Include(p => p.Category)
-            .Select(p => new ProductDto
-            {
-                Id = p.Id,
-                Name = p.Name,
-                Price = p.Price,
-                Stock = p.Stock,
-                CreatedAt = p.CreatedAt,
-                CategoryId = p.CategoryId,
-                CategoryName = p.Category.Name
-            })
-            .ToListAsync();
-    }
+        Items = products,
+        TotalCount = totalCount,
+        Page = page,
+        PageSize = pageSize
+    };
+}
 
     [HttpGet("{id:int}")]
     public async Task<ActionResult<ProductDto>> GetProduct(int id)
