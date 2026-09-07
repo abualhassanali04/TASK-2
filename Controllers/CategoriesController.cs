@@ -6,6 +6,7 @@ using ProductCatalogApi.DTOs;
 
 namespace ProductCatalogApi.Controllers
 {
+    
     [ApiController]
     [Route("api/[controller]")]
     public class CategoriesController : ControllerBase
@@ -19,6 +20,7 @@ namespace ProductCatalogApi.Controllers
             _logger = logger;
         }
 
+        // GET: api/categories
         [HttpGet]
         public async Task<ActionResult<IEnumerable<CategoryDto>>> GetCategories()
         {
@@ -32,6 +34,7 @@ namespace ProductCatalogApi.Controllers
                 .ToListAsync();
         }
 
+        // GET: api/categories/5
         [HttpGet("{id:int}")]
         public async Task<ActionResult<CategoryDto>> GetCategory(int id)
         {
@@ -81,6 +84,8 @@ namespace ProductCatalogApi.Controllers
             return products;
         }
 
+
+        // POST: api/categories
         [HttpPost]
         public async Task<ActionResult<CategoryDto>> CreateCategory(CreateCategoryDto dto)
         {
@@ -105,6 +110,7 @@ namespace ProductCatalogApi.Controllers
             return CreatedAtAction(nameof(GetCategory), new { id = category.Id }, resultDto);
         }
 
+        // PUT: api/categories/5
         [HttpPut("{id:int}")]
         public async Task<IActionResult> UpdateCategory(int id, UpdateCategoryDto dto)
         {
@@ -123,7 +129,8 @@ namespace ProductCatalogApi.Controllers
 
             return NoContent();
         }
-
+        
+        // DELETE: api/categories/5
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> DeleteCategory(int id)
         {

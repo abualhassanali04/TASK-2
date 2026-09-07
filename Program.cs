@@ -11,13 +11,10 @@ builder.Host.UseSerilog((context, config) =>
         .WriteTo.File("Logs/log-.txt", rollingInterval: RollingInterval.Day);
 });
 
-// Add services to the container.
 builder.Services.AddControllers();
 
-// جديد: يفعّل اكتشاف الـ endpoints تلقائياً
 builder.Services.AddEndpointsApiExplorer();
 
-// جديد: يولّد مواصفات Swagger
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<AppDbContext>(options =>

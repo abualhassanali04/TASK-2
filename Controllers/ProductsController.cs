@@ -69,6 +69,7 @@ public async Task<ActionResult<PagedResultDto<ProductDto>>> GetProducts(
     };
 }
 
+    // GET: api/products/5
     [HttpGet("{id:int}")]
     public async Task<ActionResult<ProductDto>> GetProduct(int id)
     {
@@ -96,6 +97,7 @@ public async Task<ActionResult<PagedResultDto<ProductDto>>> GetProducts(
         return product;
     }
 
+    // POST: api/products
     [HttpPost]
     public async Task<ActionResult<ProductDto>> CreateProduct(CreateProductDto dto)
     {
@@ -130,12 +132,13 @@ public async Task<ActionResult<PagedResultDto<ProductDto>>> GetProducts(
             Stock = product.Stock,
             CreatedAt = product.CreatedAt,
             CategoryId = product.CategoryId,
-            CategoryName = category?.Name
+            CategoryName = category?.Name 
         };
 
         return CreatedAtAction(nameof(GetProduct), new { id = product.Id }, resultDto);
     }
 
+    // PUT: api/products/5
     [HttpPut("{id:int}")]
     public async Task<IActionResult> UpdateProduct(int id, UpdateProductDto dto)
     {
@@ -165,6 +168,7 @@ public async Task<ActionResult<PagedResultDto<ProductDto>>> GetProducts(
         return NoContent();
     }
 
+    // DELETE: api/products/5
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> DeleteProduct(int id)
     {
