@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using ProductCatalogApi.Data;
 using ProductCatalogApi.Models;
 using ProductCatalogApi.DTOs;
-using MappingExtensions;
+using ProductCatalogApi.Extensions;
 
 namespace ProductCatalogApi.Controllers;
 

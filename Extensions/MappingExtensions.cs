@@ -1,7 +1,7 @@
 using ProductCatalogApi.Models;
 using ProductCatalogApi.DTOs;
 
-namespace MappingExtensions;
+namespace ProductCatalogApi.Extensions;
 
 public static class MappingExtensions
 {
