@@ -3,10 +3,10 @@ using Microsoft.EntityFrameworkCore;
 using ProductCatalogApi.Data;
 using ProductCatalogApi.Models;
 using ProductCatalogApi.DTOs;
+using MappingExtensions;
 
 namespace ProductCatalogApi.Controllers
 {
-    
     [ApiController]
     [Route("api/[controller]")]
     public class CategoriesController : ControllerBase
@@ -24,36 +24,22 @@ namespace ProductCatalogApi.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<CategoryDto>>> GetCategories()
         {
-            return await _context.Categories
-                .Select(c => new CategoryDto
-                {
-                    Id = c.Id,
-                    Name = c.Name,
-                    Description = c.Description
-                })
-                .ToListAsync();
+            var categories = await _context.Categories.ToListAsync();
+            return categories.Select(c => c.ToDto()).ToList();
         }
 
         // GET: api/categories/5
         [HttpGet("{id:int}")]
         public async Task<ActionResult<CategoryDto>> GetCategory(int id)
         {
-            var category = await _context.Categories
-                .Where(c => c.Id == id)
-                .Select(c => new CategoryDto
-                {
-                    Id = c.Id,
-                    Name = c.Name,
-                    Description = c.Description
-                })
-                .FirstOrDefaultAsync();
+            var category = await _context.Categories.FindAsync(id);
 
             if (category == null)
             {
                 _logger.LogWarning("Category with id {Id} was not found", id);
                 return NotFound("Category not found.");
             }
-            return category;
+            return category.ToDto();
         }
 
         // GET: api/categories/5/products
@@ -68,46 +54,25 @@ namespace ProductCatalogApi.Controllers
             }
 
             var products = await _context.Products
+                .Include(p => p.Category)
                 .Where(p => p.CategoryId == id)
-                .Select(p => new ProductDto
-                {
-                    Id = p.Id,
-                    Name = p.Name,
-                    Price = p.Price,
-                    Stock = p.Stock,
-                    CreatedAt = p.CreatedAt,
-                    CategoryId = p.CategoryId,
-                    CategoryName = p.Category.Name
-                })
                 .ToListAsync();
 
-            return products;
+            return products.Select(p => p.ToDto()).ToList();
         }
-
 
         // POST: api/categories
         [HttpPost]
         public async Task<ActionResult<CategoryDto>> CreateCategory(CreateCategoryDto dto)
         {
-            var category = new Category
-            {
-                Name = dto.Name,
-                Description = dto.Description
-            };
+            var category = dto.ToEntity();
 
             _context.Categories.Add(category);
             await _context.SaveChangesAsync();
 
             _logger.LogInformation("Category {Id} ({Name}) created", category.Id, category.Name);
 
-            var resultDto = new CategoryDto
-            {
-                Id = category.Id,
-                Name = category.Name,
-                Description = category.Description
-            };
-
-            return CreatedAtAction(nameof(GetCategory), new { id = category.Id }, resultDto);
+            return CreatedAtAction(nameof(GetCategory), new { id = category.Id }, category.ToDto());
         }
 
         // PUT: api/categories/5
@@ -121,15 +86,14 @@ namespace ProductCatalogApi.Controllers
                 return NotFound("Category not found.");
             }
 
-            existingCategory.Name = dto.Name;
-            existingCategory.Description = dto.Description;
+            dto.UpdateEntity(existingCategory);
             await _context.SaveChangesAsync();
 
             _logger.LogInformation("Category {Id} was updated", id);
 
             return NoContent();
         }
-        
+
         // DELETE: api/categories/5
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> DeleteCategory(int id)

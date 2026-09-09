@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using ProductCatalogApi.Data;
 using ProductCatalogApi.Models;
 using ProductCatalogApi.DTOs;
+using MappingExtensions;
 
 namespace ProductCatalogApi.Controllers;
 
@@ -20,54 +21,44 @@ public class ProductsController : ControllerBase
     }
 
     // GET: api/products?page=1&pageSize=10&search=laptop&categoryId=1&minPrice=100
-[HttpGet]
-public async Task<ActionResult<PagedResultDto<ProductDto>>> GetProducts(
-    int page = 1,
-    int pageSize = 10,
-    string? search = null,
-    int? categoryId = null,
-    decimal? minPrice = null)
-{
-    if (page < 1) page = 1;
-    if (pageSize < 1 || pageSize > 100) pageSize = 10;
-
-    var query = _context.Products.Include(p => p.Category).AsQueryable();
-
-    if (!string.IsNullOrWhiteSpace(search))
-        query = query.Where(p => p.Name.ToLower().Contains(search.ToLower()));
-
-    if (categoryId.HasValue)
-        query = query.Where(p => p.CategoryId == categoryId.Value);
-
-    if (minPrice.HasValue)
-        query = query.Where(p => p.Price >= minPrice.Value);
-
-    var totalCount = await query.CountAsync();
-
-    var products = await query
-        .OrderBy(p => p.Id)
-        .Skip((page - 1) * pageSize)
-        .Take(pageSize)
-        .Select(p => new ProductDto
-        {
-            Id = p.Id,
-            Name = p.Name,
-            Price = p.Price,
-            Stock = p.Stock,
-            CreatedAt = p.CreatedAt,
-            CategoryId = p.CategoryId,
-            CategoryName = p.Category.Name
-        })
-        .ToListAsync();
-
-    return new PagedResultDto<ProductDto>
+    [HttpGet]
+    public async Task<ActionResult<PagedResultDto<ProductDto>>> GetProducts(
+        int page = 1,
+        int pageSize = 10,
+        string? search = null,
+        int? categoryId = null,
+        decimal? minPrice = null)
     {
-        Items = products,
-        TotalCount = totalCount,
-        Page = page,
-        PageSize = pageSize
-    };
-}
+        if (page < 1) page = 1;
+        if (pageSize < 1 || pageSize > 100) pageSize = 10;
+
+        var query = _context.Products.Include(p => p.Category).AsQueryable();
+
+        if (!string.IsNullOrWhiteSpace(search))
+            query = query.Where(p => p.Name.ToLower().Contains(search.ToLower()));
+
+        if (categoryId.HasValue)
+            query = query.Where(p => p.CategoryId == categoryId.Value);
+
+        if (minPrice.HasValue)
+            query = query.Where(p => p.Price >= minPrice.Value);
+
+        var totalCount = await query.CountAsync();
+
+        var products = await query
+            .OrderBy(p => p.Id)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+
+        return new PagedResultDto<ProductDto>
+        {
+            Items = products.Select(p => p.ToDto()).ToList(),
+            TotalCount = totalCount,
+            Page = page,
+            PageSize = pageSize
+        };
+    }
 
     // GET: api/products/5
     [HttpGet("{id:int}")]
@@ -75,18 +66,7 @@ public async Task<ActionResult<PagedResultDto<ProductDto>>> GetProducts(
     {
         var product = await _context.Products
             .Include(p => p.Category)
-            .Where(p => p.Id == id)
-            .Select(p => new ProductDto
-            {
-                Id = p.Id,
-                Name = p.Name,
-                Price = p.Price,
-                Stock = p.Stock,
-                CreatedAt = p.CreatedAt,
-                CategoryId = p.CategoryId,
-                CategoryName = p.Category.Name
-            })
-            .FirstOrDefaultAsync();
+            .FirstOrDefaultAsync(p => p.Id == id);
 
         if (product == null)
         {
@@ -94,7 +74,7 @@ public async Task<ActionResult<PagedResultDto<ProductDto>>> GetProducts(
             return NotFound("Product not found.");
         }
 
-        return product;
+        return product.ToDto();
     }
 
     // POST: api/products
@@ -108,34 +88,17 @@ public async Task<ActionResult<PagedResultDto<ProductDto>>> GetProducts(
             return BadRequest("Invalid CategoryId.");
         }
 
-        var product = new Product
-        {
-            Name = dto.Name,
-            Price = dto.Price,
-            Stock = dto.Stock,
-            CategoryId = dto.CategoryId,
-            CreatedAt = DateTime.Now
-        };
+        var product = dto.ToEntity();
 
         _context.Products.Add(product);
         await _context.SaveChangesAsync();
 
         _logger.LogInformation("Product {Id} ({Name}) created under category {CategoryId}", product.Id, product.Name, product.CategoryId);
 
-        var category = await _context.Categories.FindAsync(dto.CategoryId);
+        // نحمّل التصنيف عشان الـ CategoryName تظهر صح بالرد
+        await _context.Entry(product).Reference(p => p.Category).LoadAsync();
 
-        var resultDto = new ProductDto
-        {
-            Id = product.Id,
-            Name = product.Name,
-            Price = product.Price,
-            Stock = product.Stock,
-            CreatedAt = product.CreatedAt,
-            CategoryId = product.CategoryId,
-            CategoryName = category?.Name 
-        };
-
-        return CreatedAtAction(nameof(GetProduct), new { id = product.Id }, resultDto);
+        return CreatedAtAction(nameof(GetProduct), new { id = product.Id }, product.ToDto());
     }
 
     // PUT: api/products/5
@@ -156,10 +119,7 @@ public async Task<ActionResult<PagedResultDto<ProductDto>>> GetProducts(
             return BadRequest("Invalid CategoryId.");
         }
 
-        existingProduct.Name = dto.Name;
-        existingProduct.Price = dto.Price;
-        existingProduct.Stock = dto.Stock;
-        existingProduct.CategoryId = dto.CategoryId;
+        dto.UpdateEntity(existingProduct);
 
         await _context.SaveChangesAsync();
 

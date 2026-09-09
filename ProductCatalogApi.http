@@ -55,9 +55,9 @@ POST {{HostAddress}}/api/Products
 Content-Type: application/json
 
 {
-  "name": "Phone: Iphone 17 Pro Max",
-  "price": 1399.99,
-  "stock": 25,
+  "name": "Phone: Xaomi Mi 17",
+  "price": 1099.99,
+  "stock": 45,
   "categoryId": 6
 }
 
