@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using ProductCatalogApi.Data;
 using ProductCatalogApi.DTOs;
+using ProductCatalogApi.Services;
 
 namespace ProductCatalogApi.Controllers
 {
@@ -9,68 +8,36 @@ namespace ProductCatalogApi.Controllers
     [Route("api/reports")]
     public class ReportsController : ControllerBase
     {
-        private readonly AppDbContext _context;
-        private readonly ILogger<ReportsController> _logger;
+        private readonly IReportService _reportService;
 
-        public ReportsController(AppDbContext context, ILogger<ReportsController> logger)
+        public ReportsController(IReportService reportService)
         {
-            _context = context;
-            _logger = logger;
+            _reportService = reportService;
         }
 
-        // GET: api/reports/inventory-value
         [HttpGet("inventory-value")]
         public async Task<ActionResult<InventoryValueDto>> GetInventoryValue()
         {
-            var totalValue = await _context.Products
-                .SumAsync(p => p.Price * p.Stock);
-
-            _logger.LogInformation("Inventory value report generated: {TotalValue}", totalValue);
-
-            return new InventoryValueDto { TotalValue = totalValue };
+            var result = await _reportService.GetTotalInventoryValueAsync();
+            return result.Data!;
         }
 
-        // GET: api/reports/most-expensive-product
         [HttpGet("most-expensive-product")]
         public async Task<ActionResult<MostExpensiveProductDto>> GetMostExpensiveProduct()
         {
-            var product = await _context.Products
-                .OrderByDescending(p => p.Price)
-                .Select(p => new MostExpensiveProductDto
-                {
-                    Id = p.Id,
-                    Name = p.Name,
-                    Price = p.Price
-                })
-                .FirstOrDefaultAsync();
+            var result = await _reportService.GetMostExpensiveProductAsync();
 
-            if (product == null)
-            {
-                _logger.LogWarning("Most expensive product report requested but no products exist");
-                return NotFound("No products available.");
-            }
+            if (!result.Success)
+                return NotFound(result.ErrorMessage);
 
-            return product;
+            return result.Data!;
         }
 
-        // GET: api/reports/out-of-stock
         [HttpGet("out-of-stock")]
         public async Task<ActionResult<IEnumerable<OutOfStockProductDto>>> GetOutOfStockProducts()
         {
-            var products = await _context.Products
-                .Where(p => p.Stock == 0)
-                .Select(p => new OutOfStockProductDto
-                {
-                    Id = p.Id,
-                    Name = p.Name,
-                    Stock = p.Stock
-                })
-                .ToListAsync();
-
-            _logger.LogInformation("Out-of-stock report generated: {Count} products", products.Count);
-
-            return products;
+            var result = await _reportService.GetOutOfStockProductsAsync();
+            return result.Data!.ToList();
         }
-
     }
 }

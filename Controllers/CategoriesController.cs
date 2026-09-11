@@ -1,9 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using ProductCatalogApi.Data;
-using ProductCatalogApi.Models;
 using ProductCatalogApi.DTOs;
 using ProductCatalogApi.Extensions;
+using ProductCatalogApi.Services;
 
 namespace ProductCatalogApi.Controllers
 {
@@ -11,85 +9,63 @@ namespace ProductCatalogApi.Controllers
     [Route("api/[controller]")]
     public class CategoriesController : ControllerBase
     {
-        private readonly AppDbContext _context;
-        private readonly ILogger<CategoriesController> _logger;
+        private readonly ICategoryService _categoryService;
 
-        public CategoriesController(AppDbContext context, ILogger<CategoriesController> logger)
+        public CategoriesController(ICategoryService categoryService)
         {
-            _context = context;
-            _logger = logger;
+            _categoryService = categoryService;
         }
 
         // GET: api/categories
         [HttpGet]
         public async Task<ActionResult<IEnumerable<CategoryDto>>> GetCategories()
         {
-            var categories = await _context.Categories.ToListAsync();
-            return categories.Select(c => c.ToDto()).ToList();
+            var result = await _categoryService.GetAllCategoriesAsync();
+            return result.Data!.Select(c => c.ToDto()).ToList();
         }
 
         // GET: api/categories/5
         [HttpGet("{id:int}")]
         public async Task<ActionResult<CategoryDto>> GetCategory(int id)
         {
-            var category = await _context.Categories.FindAsync(id);
+            var result = await _categoryService.GetCategoryByIdAsync(id);
 
-            if (category == null)
-            {
-                _logger.LogWarning("Category with id {Id} was not found", id);
-                return NotFound("Category not found.");
-            }
-            return category.ToDto();
+            if (!result.Success)
+                return NotFound(result.ErrorMessage);
+
+            return result.Data!.ToDto();
         }
 
         // GET: api/categories/5/products
         [HttpGet("{id}/products")]
         public async Task<ActionResult<IEnumerable<ProductDto>>> GetProductsByCategory(int id)
         {
-            var categoryExists = await _context.Categories.AnyAsync(c => c.Id == id);
-            if (!categoryExists)
-            {
-                _logger.LogWarning("Attempted to get products for non-existent category {Id}", id);
-                return NotFound($"Category with id {id} not found.");
-            }
+            var result = await _categoryService.GetProductsByCategoryIdAsync(id);
 
-            var products = await _context.Products
-                .Include(p => p.Category)
-                .Where(p => p.CategoryId == id)
-                .ToListAsync();
+            if (!result.Success)
+                return NotFound(result.ErrorMessage);
 
-            return products.Select(p => p.ToDto()).ToList();
+            return result.Data!.Select(p => p.ToDto()).ToList();
         }
 
         // POST: api/categories
         [HttpPost]
         public async Task<ActionResult<CategoryDto>> CreateCategory(CreateCategoryDto dto)
         {
-            var category = dto.ToEntity();
+            var result = await _categoryService.CreateCategoryAsync(dto);
+            var categoryDto = result.Data!.ToDto();
 
-            _context.Categories.Add(category);
-            await _context.SaveChangesAsync();
-
-            _logger.LogInformation("Category {Id} ({Name}) created", category.Id, category.Name);
-
-            return CreatedAtAction(nameof(GetCategory), new { id = category.Id }, category.ToDto());
+            return CreatedAtAction(nameof(GetCategory), new { id = categoryDto.Id }, categoryDto);
         }
 
         // PUT: api/categories/5
         [HttpPut("{id:int}")]
         public async Task<IActionResult> UpdateCategory(int id, UpdateCategoryDto dto)
         {
-            var existingCategory = await _context.Categories.FindAsync(id);
-            if (existingCategory == null)
-            {
-                _logger.LogWarning("Attempted to update non-existent category with id {Id}", id);
-                return NotFound("Category not found.");
-            }
+            var result = await _categoryService.UpdateCategoryAsync(id, dto);
 
-            dto.UpdateEntity(existingCategory);
-            await _context.SaveChangesAsync();
-
-            _logger.LogInformation("Category {Id} was updated", id);
+            if (!result.Success)
+                return NotFound(result.ErrorMessage);
 
             return NoContent();
         }
@@ -98,17 +74,10 @@ namespace ProductCatalogApi.Controllers
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> DeleteCategory(int id)
         {
-            var category = await _context.Categories.FindAsync(id);
-            if (category == null)
-            {
-                _logger.LogWarning("Attempted to delete non-existent category with id {Id}", id);
-                return NotFound("Category not found.");
-            }
+            var result = await _categoryService.DeleteCategoryAsync(id);
 
-            _context.Categories.Remove(category);
-            await _context.SaveChangesAsync();
-
-            _logger.LogInformation("Category {Id} ({Name}) was deleted", category.Id, category.Name);
+            if (!result.Success)
+                return NotFound(result.ErrorMessage);
 
             return NoContent();
         }

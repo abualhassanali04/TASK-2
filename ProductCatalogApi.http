@@ -83,3 +83,12 @@ GET {{HostAddress}}/api/reports/most-expensive-product
 
 ### Reports - Out of stock products
 GET {{HostAddress}}/api/reports/out-of-stock
+
+
+
+### Reports
+GET {{HostAddress}}/api/reports/inventory-value
+###
+GET {{HostAddress}}/api/reports/most-expensive-product
+###
+GET {{HostAddress}}/api/reports/out-of-stock

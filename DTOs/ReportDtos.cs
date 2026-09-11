@@ -2,6 +2,7 @@ namespace ProductCatalogApi.DTOs
 {
     public class InventoryValueDto
     {
+        
         public decimal TotalValue { get; set; }
     }
 
