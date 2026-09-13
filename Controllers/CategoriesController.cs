@@ -24,7 +24,7 @@ namespace ProductCatalogApi.Controllers
             return result.Data!.Select(c => c.ToDto()).ToList();
         }
 
-        // GET: api/categories/5
+        // GET: api/categories/6
         [HttpGet("{id:int}")]
         public async Task<ActionResult<CategoryDto>> GetCategory(int id)
         {
@@ -36,7 +36,7 @@ namespace ProductCatalogApi.Controllers
             return result.Data!.ToDto();
         }
 
-        // GET: api/categories/5/products
+        // GET: api/categories/6/products
         [HttpGet("{id}/products")]
         public async Task<ActionResult<IEnumerable<ProductDto>>> GetProductsByCategory(int id)
         {
@@ -58,7 +58,7 @@ namespace ProductCatalogApi.Controllers
             return CreatedAtAction(nameof(GetCategory), new { id = categoryDto.Id }, categoryDto);
         }
 
-        // PUT: api/categories/5
+        // PUT: api/categories/6
         [HttpPut("{id:int}")]
         public async Task<IActionResult> UpdateCategory(int id, UpdateCategoryDto dto)
         {
@@ -70,7 +70,7 @@ namespace ProductCatalogApi.Controllers
             return NoContent();
         }
 
-        // DELETE: api/categories/5
+        // DELETE: api/categories/6
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> DeleteCategory(int id)
         {

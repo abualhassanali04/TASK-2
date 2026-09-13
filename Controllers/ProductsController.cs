@@ -34,7 +34,7 @@ public class ProductsController : ControllerBase
         return dtoResult;
     }
 
-    // GET: api/products/5
+    // GET: api/products/6
     [HttpGet("{id:int}")]
     public async Task<ActionResult<ProductDto>> GetProduct(int id)
     {
@@ -59,7 +59,7 @@ public class ProductsController : ControllerBase
         return CreatedAtAction(nameof(GetProduct), new { id = productDto.Id }, productDto);
     }
 
-    // PUT: api/products/5
+    // PUT: api/products/6
     [HttpPut("{id:int}")]
     public async Task<IActionResult> UpdateProduct(int id, UpdateProductDto dto)
     {
@@ -75,7 +75,7 @@ public class ProductsController : ControllerBase
         return NoContent();
     }
 
-    // DELETE: api/products/5
+    // DELETE: api/products/6
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> DeleteProduct(int id)
     {

@@ -75,6 +75,8 @@ Content-Type: application/json
 ### Products - Delete
 DELETE {{HostAddress}}/api/Products/3
 
+
+
 ### Reports - Inventory value
 GET {{HostAddress}}/api/reports/inventory-value
 
@@ -85,10 +87,11 @@ GET {{HostAddress}}/api/reports/most-expensive-product
 GET {{HostAddress}}/api/reports/out-of-stock
 
 
+### Auth - Register a new user
+POST {{HostAddress}}/api/auth/register
+Content-Type: application/json
 
-### Reports
-GET {{HostAddress}}/api/reports/inventory-value
-###
-GET {{HostAddress}}/api/reports/most-expensive-product
-###
-GET {{HostAddress}}/api/reports/out-of-stock
+{
+  "username": "Alihussein",
+  "password": "Testing123"
+}
