@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ProductCatalogApi.DTOs;
 using ProductCatalogApi.Extensions;
@@ -7,6 +8,7 @@ namespace ProductCatalogApi.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class ProductsController : ControllerBase
 {
     private readonly IProductService _productService;
@@ -18,6 +20,7 @@ public class ProductsController : ControllerBase
 
     // GET: api/products?page=1&pageSize=10&search=laptop&categoryId=1&minPrice=100
     [HttpGet]
+    [AllowAnonymous]
     public async Task<ActionResult<PagedResultDto<ProductDto>>> GetProducts(
         int page = 1, int pageSize = 10, string? search = null, int? categoryId = null, decimal? minPrice = null)
     {
@@ -36,6 +39,7 @@ public class ProductsController : ControllerBase
 
     // GET: api/products/6
     [HttpGet("{id:int}")]
+    [AllowAnonymous]
     public async Task<ActionResult<ProductDto>> GetProduct(int id)
     {
         var result = await _productService.GetProductByIdAsync(id);

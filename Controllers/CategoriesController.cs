@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ProductCatalogApi.DTOs;
 using ProductCatalogApi.Extensions;
@@ -7,6 +8,7 @@ namespace ProductCatalogApi.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class CategoriesController : ControllerBase
     {
         private readonly ICategoryService _categoryService;
@@ -18,6 +20,7 @@ namespace ProductCatalogApi.Controllers
 
         // GET: api/categories
         [HttpGet]
+        [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<CategoryDto>>> GetCategories()
         {
             var result = await _categoryService.GetAllCategoriesAsync();
@@ -26,6 +29,7 @@ namespace ProductCatalogApi.Controllers
 
         // GET: api/categories/6
         [HttpGet("{id:int}")]
+        [AllowAnonymous]
         public async Task<ActionResult<CategoryDto>> GetCategory(int id)
         {
             var result = await _categoryService.GetCategoryByIdAsync(id);

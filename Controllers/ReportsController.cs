@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ProductCatalogApi.DTOs;
 using ProductCatalogApi.Services;
@@ -6,6 +7,7 @@ namespace ProductCatalogApi.Controllers
 {
     [ApiController]
     [Route("api/reports")]
+    [Authorize]
     public class ReportsController : ControllerBase
     {
         private readonly IReportService _reportService;

@@ -1,4 +1,5 @@
 @HostAddress = http://localhost:5212
+@Token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjIiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiQWxpaHVzc2VpbiIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IlVzZXIiLCJleHAiOjE3ODkzNzI3NDcsImlzcyI6IlByb2R1Y3RDYXRhbG9nQXBpIiwiYXVkIjoiUHJvZHVjdENhdGFsb2dBcGlVc2VycyJ9.B1v3t8wBPVTKpGycoizTYVWof5hwJid9qhGUbO1eMdU
 
 ### Categories - Get all
 GET {{HostAddress}}/api/Categories
@@ -53,37 +54,43 @@ GET {{HostAddress}}/api/Products/3
 ### Products - Create
 POST {{HostAddress}}/api/Products
 Content-Type: application/json
+Authorization: Bearer {{Token}}
 
 {
-  "name": "Phone: Xaomi Mi 17",
-  "price": 1099.99,
+  "name": "Phone:poco f9 Ultra",
+  "price": 799.99,
   "stock": 45,
   "categoryId": 6
 }
 
 ### Products - Update
-PUT {{HostAddress}}/api/Products/3
+PUT {{HostAddress}}/api/Products/12
 Content-Type: application/json
+Authorization: Bearer {{Token}}
 
 {
-  "name": "Phone: Samsung Galaxy S21",
-  "price": 1299.99,
+  "name": "Phone: Hawaii P50 Pro",
+  "price": 299.99,
   "stock": 15,
   "categoryId": 6
 }
 
 ### Products - Delete
+Authorization: Bearer {{Token}}
 DELETE {{HostAddress}}/api/Products/3
 
 
 
 ### Reports - Inventory value
+Authorization: Bearer {{Token}}
 GET {{HostAddress}}/api/reports/inventory-value
 
 ### Reports - Most expensive product
+Authorization: Bearer {{Token}}
 GET {{HostAddress}}/api/reports/most-expensive-product
 
 ### Reports - Out of stock products
+Authorization: Bearer {{Token}}
 GET {{HostAddress}}/api/reports/out-of-stock
 
 
@@ -92,6 +99,33 @@ POST {{HostAddress}}/api/auth/register
 Content-Type: application/json
 
 {
+  "username": "Aliabaas",
+  "password": "Testing3"
+}
+
+### Auth - Login with correct credentials
+POST {{HostAddress}}/api/auth/login
+Content-Type: application/json
+
+{
   "username": "Alihussein",
   "password": "Testing123"
+}
+
+### Auth - Login with wrong password
+POST {{HostAddress}}/api/auth/login
+Content-Type: application/json
+
+{
+  "username": "Alihussein",
+  "password": "WrongPassword"
+}
+
+### Auth - Login with nonexistent username
+POST {{HostAddress}}/api/auth/login
+Content-Type: application/json
+
+{
+  "username": "nonexistent",
+  "password": "AnyPassword"
 }

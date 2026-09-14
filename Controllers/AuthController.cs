@@ -25,5 +25,16 @@ namespace ProductCatalogApi.Controllers
 
             return Ok(result.Data);
         }
+
+        [HttpPost("login")]
+        public async Task<ActionResult> Login(LoginDto dto)
+        {
+            var result = await _authService.LoginAsync(dto);
+
+            if (!result.Success)
+                return BadRequest(result.ErrorMessage);
+
+            return Ok(new { token = result.Data });
+        }
     }
 }
