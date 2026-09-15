@@ -90,4 +90,11 @@ public class ProductsController : ControllerBase
 
         return NoContent();
     }
+
+    [HttpGet("test-error")]
+[AllowAnonymous]
+public IActionResult TestError()
+{
+    throw new Exception("This is a test exception to verify the global handler.");
+}
 }

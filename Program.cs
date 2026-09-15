@@ -4,6 +4,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using ProductCatalogApi.Data;
 using ProductCatalogApi.Services;
+using ProductCatalogApi.Middleware;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -50,7 +51,14 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
+
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+builder.Services.AddProblemDetails();
+
 var app = builder.Build();
+
+
+app.UseExceptionHandler();
 
 if (app.Environment.IsDevelopment())
 {

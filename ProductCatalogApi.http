@@ -62,6 +62,8 @@ Authorization: Bearer {{Token}}
   "stock": 45,
   "categoryId": 6
 }
+### test error
+GET {{HostAddress}}/api/Products/test-error
 
 ### Products - Update
 PUT {{HostAddress}}/api/Products/12
