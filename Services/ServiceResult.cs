@@ -5,7 +5,7 @@ namespace ProductCatalogApi.Services
         NotFound,
         ValidationError,
         Conflict,
-        Unauthorized
+        Unauthorized 
     }
 
     public class ServiceResult<T>

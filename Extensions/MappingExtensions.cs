@@ -17,7 +17,7 @@ public static class MappingExtensions
             Stock = product.Stock,
             CreatedAt = product.CreatedAt,
             CategoryId = product.CategoryId,
-            CategoryName = product.Category?.Name
+            CategoryName = product.Category?.Name ?? string.Empty
         };
     }
 

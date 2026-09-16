@@ -52,6 +52,7 @@ public class AuthServiceTest
         var result = await service.LoginAsync(request);
 
         Assert.True(result.Success);
-        Assert.False(string.IsNullOrWhiteSpace(result.Data));
+        Assert.NotNull(result.Data);
+        Assert.False(string.IsNullOrWhiteSpace(result.Data!.AccessToken));
     }
 }

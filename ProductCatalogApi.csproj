@@ -11,6 +11,8 @@
     <Compile Remove="ProductCatalogApi.Tests\**" />
     <EmbeddedResource Remove="ProductCatalogApi.Tests\**" />
     <None Remove="ProductCatalogApi.Tests\**" />
+    <Content Remove="ProductCatalogApi.Tests\**" />
+    <_NoneWithTargetPath Remove="ProductCatalogApi.Tests\**" />
   </ItemGroup>
 
   <ItemGroup>

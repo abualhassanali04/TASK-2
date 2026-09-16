@@ -5,12 +5,12 @@ namespace ProductCatalogApi.DTOs
     public class ProductDto
     {
         public int Id { get; set; }
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
         public decimal Price { get; set; }
         public int Stock { get; set; }
         public DateTime CreatedAt { get; set; }
         public int CategoryId { get; set; }
-        public string CategoryName { get; set; }
+        public string CategoryName { get; set; } = string.Empty;
     }
 
     public class CreateProductDto
@@ -18,7 +18,7 @@ namespace ProductCatalogApi.DTOs
         [Required]
         [MaxLength(100)]
         [MinLength(5, ErrorMessage = "Name must be at least 5 characters long.")]
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
 
         [Range(0.01, double.MaxValue, ErrorMessage = "Price must be greater than 0.")]
         public decimal Price { get; set; }
@@ -35,7 +35,7 @@ namespace ProductCatalogApi.DTOs
         [Required]
         [MaxLength(100)]
         [MinLength(5, ErrorMessage = "Name must be at least 5 characters long.")]
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
 
         [Range(0.01, double.MaxValue, ErrorMessage = "Price must be greater than 0.")]
         public decimal Price { get; set; }

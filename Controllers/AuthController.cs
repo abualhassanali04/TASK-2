@@ -26,7 +26,7 @@ namespace ProductCatalogApi.Controllers
             return Ok(result.Data);
         }
 
-        [HttpPost("login")]
+       [HttpPost("login")]
         public async Task<ActionResult> Login(LoginDto dto)
         {
             var result = await _authService.LoginAsync(dto);
@@ -34,7 +34,18 @@ namespace ProductCatalogApi.Controllers
             if (!result.Success)
                 return BadRequest(result.ErrorMessage);
 
-            return Ok(new { token = result.Data });
+            return Ok(result.Data);
+        }
+
+        [HttpPost("refresh")]
+        public async Task<ActionResult> Refresh(RefreshTokenDto dto)
+        {
+            var result = await _authService.RefreshTokenAsync(dto);
+
+            if (!result.Success)
+                return BadRequest(result.ErrorMessage);
+
+            return Ok(result.Data);
         }
     }
 }

@@ -1,6 +1,5 @@
 @HostAddress = http://localhost:5212
-@Token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjIiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiQWxpaHVzc2VpbiIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IlVzZXIiLCJleHAiOjE3ODkzNzI3NDcsImlzcyI6IlByb2R1Y3RDYXRhbG9nQXBpIiwiYXVkIjoiUHJvZHVjdENhdGFsb2dBcGlVc2VycyJ9.B1v3t8wBPVTKpGycoizTYVWof5hwJid9qhGUbO1eMdU
-
+@Token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjUiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiQWRtaW4iLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJBZG1pbiIsImV4cCI6MTc4OTU0NDk5NywiaXNzIjoiUHJvZHVjdENhdGFsb2dBcGkiLCJhdWQiOiJQcm9kdWN0Q2F0YWxvZ0FwaVVzZXJzIn0.UWwZ4mp43xjV4HSoHfvg4DCgY7Et71UsPt0Ey0av_fU
 ### Categories - Get all
 GET {{HostAddress}}/api/Categories
 
@@ -77,23 +76,23 @@ Authorization: Bearer {{Token}}
   "categoryId": 6
 }
 
+
 ### Products - Delete
+DELETE {{HostAddress}}/api/Products/13
 Authorization: Bearer {{Token}}
-DELETE {{HostAddress}}/api/Products/3
 
 
 
 ### Reports - Inventory value
-Authorization: Bearer {{Token}}
 GET {{HostAddress}}/api/reports/inventory-value
-
-### Reports - Most expensive product
 Authorization: Bearer {{Token}}
+### Reports - Most expensive product
 GET {{HostAddress}}/api/reports/most-expensive-product
+Authorization: Bearer {{Token}}
 
 ### Reports - Out of stock products
-Authorization: Bearer {{Token}}
 GET {{HostAddress}}/api/reports/out-of-stock
+Authorization: Bearer {{Token}}
 
 
 ### Auth - Register a new user
@@ -101,17 +100,17 @@ POST {{HostAddress}}/api/auth/register
 Content-Type: application/json
 
 {
-  "username": "Aliabaas",
-  "password": "Testing3"
-}
+  "username": "Admin",
+  "password": "Admin123"
+  }
 
 ### Auth - Login with correct credentials
 POST {{HostAddress}}/api/auth/login
 Content-Type: application/json
 
 {
-  "username": "Alihussein",
-  "password": "Testing123"
+  "username": "Admin",
+  "password": "Admin123"
 }
 
 ### Auth - Login with wrong password
@@ -130,4 +129,15 @@ Content-Type: application/json
 {
   "username": "nonexistent",
   "password": "AnyPassword"
+}
+
+### test error
+GET {{HostAddress}}/api/Products/test-error
+
+### Auth - Refresh token
+POST {{HostAddress}}/api/auth/refresh
+Content-Type: application/json
+
+{
+  "refreshToken": "buX3YlR+Qq5e4cGDxELvRTXAAEebFIIur4KfbypSP0bjUtmhX1101WPnN1uDEVPmxf1TUNG1EGVcqcL6k93SVA=="
 }

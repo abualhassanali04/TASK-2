@@ -76,6 +76,7 @@ namespace ProductCatalogApi.Controllers
 
         // DELETE: api/categories/6
         [HttpDelete("{id:int}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteCategory(int id)
         {
             var result = await _categoryService.DeleteCategoryAsync(id);
