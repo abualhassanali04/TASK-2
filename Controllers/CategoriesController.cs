@@ -42,6 +42,7 @@ namespace ProductCatalogApi.Controllers
 
         // GET: api/categories/6/products
         [HttpGet("{id}/products")]
+        [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<ProductDto>>> GetProductsByCategory(int id)
         {
             var result = await _categoryService.GetProductsByCategoryIdAsync(id);

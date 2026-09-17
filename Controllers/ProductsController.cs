@@ -93,9 +93,9 @@ public class ProductsController : ControllerBase
     }
 
     [HttpGet("test-error")]
-[AllowAnonymous]
-public IActionResult TestError()
-{
-    throw new Exception("This is a test exception to verify the global handler.");
-}
+    [AllowAnonymous]
+    public IActionResult TestError()
+    {
+        throw new Exception("This is a test exception to verify the global handler.");
+    }
 }

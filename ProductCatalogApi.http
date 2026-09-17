@@ -1,5 +1,6 @@
 @HostAddress = http://localhost:5212
-@Token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjUiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiQWRtaW4iLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJBZG1pbiIsImV4cCI6MTc4OTU0NDk5NywiaXNzIjoiUHJvZHVjdENhdGFsb2dBcGkiLCJhdWQiOiJQcm9kdWN0Q2F0YWxvZ0FwaVVzZXJzIn0.UWwZ4mp43xjV4HSoHfvg4DCgY7Et71UsPt0Ey0av_fU
+@Token =Bearer {{login.response.body.$.accessToken}}
+@RefreshToken = {{login.response.body.$.refreshToken}} 
 ### Categories - Get all
 GET {{HostAddress}}/api/Categories
 
@@ -53,7 +54,7 @@ GET {{HostAddress}}/api/Products/3
 ### Products - Create
 POST {{HostAddress}}/api/Products
 Content-Type: application/json
-Authorization: Bearer {{Token}}
+Authorization:{{Token}}
 
 {
   "name": "Phone:poco f9 Ultra",
@@ -67,7 +68,7 @@ GET {{HostAddress}}/api/Products/test-error
 ### Products - Update
 PUT {{HostAddress}}/api/Products/12
 Content-Type: application/json
-Authorization: Bearer {{Token}}
+Authorization:{{Token}}
 
 {
   "name": "Phone: Hawaii P50 Pro",
@@ -79,20 +80,20 @@ Authorization: Bearer {{Token}}
 
 ### Products - Delete
 DELETE {{HostAddress}}/api/Products/13
-Authorization: Bearer {{Token}}
+Authorization:{{Token}}
 
 
 
 ### Reports - Inventory value
 GET {{HostAddress}}/api/reports/inventory-value
-Authorization: Bearer {{Token}}
+Authorization: {{Token}}
 ### Reports - Most expensive product
 GET {{HostAddress}}/api/reports/most-expensive-product
-Authorization: Bearer {{Token}}
+Authorization: {{Token}}
 
 ### Reports - Out of stock products
 GET {{HostAddress}}/api/reports/out-of-stock
-Authorization: Bearer {{Token}}
+Authorization:{{Token}}
 
 
 ### Auth - Register a new user
@@ -104,7 +105,8 @@ Content-Type: application/json
   "password": "Admin123"
   }
 
-### Auth - Login with correct credentials
+### Auth - Login with Admin role
+# @name login
 POST {{HostAddress}}/api/auth/login
 Content-Type: application/json
 
@@ -113,16 +115,18 @@ Content-Type: application/json
   "password": "Admin123"
 }
 
-### Auth - Login with wrong password
+### Auth - Login with User role
+# @name login
 POST {{HostAddress}}/api/auth/login
 Content-Type: application/json
 
 {
   "username": "Alihussein",
-  "password": "WrongPassword"
+  "password": "Testing123"
 }
 
 ### Auth - Login with nonexistent username
+# @name login
 POST {{HostAddress}}/api/auth/login
 Content-Type: application/json
 
@@ -131,13 +135,16 @@ Content-Type: application/json
   "password": "AnyPassword"
 }
 
-### test error
-GET {{HostAddress}}/api/Products/test-error
-
 ### Auth - Refresh token
+# @name login
 POST {{HostAddress}}/api/auth/refresh
 Content-Type: application/json
 
 {
-  "refreshToken": "buX3YlR+Qq5e4cGDxELvRTXAAEebFIIur4KfbypSP0bjUtmhX1101WPnN1uDEVPmxf1TUNG1EGVcqcL6k93SVA=="
+  "refreshToken":"{{RefreshToken}}"
 }
+
+
+### test error
+GET {{HostAddress}}/api/Products/test-error
+
