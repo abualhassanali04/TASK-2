@@ -1,0 +1,28 @@
+{
+  "name": "ProductCatalogApi - .NET 10 + SQL Server",
+  "image": "mcr.microsoft.com/devcontainers/dotnet:10.0",
+  "features": {
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {}
+  },
+  "hostRequirements": {
+    "cpus": 2,
+    "memory": "8gb"
+  },
+  "forwardPorts": [1433, 5212, 8080],
+  "portsAttributes": {
+    "1433": { "label": "SQL Server" },
+    "5212": { "label": "API (dotnet run)" },
+    "8080": { "label": "API (container)" }
+  },
+  "postCreateCommand": "dotnet tool install --global dotnet-ef && (cp -n .env.example .env || true) && dotnet restore",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-dotnettools.csdevkit",
+        "ms-mssql.mssql",
+        "ms-azuretools.vscode-docker",
+        "humao.rest-client"
+      ]
+    }
+  }
+}
