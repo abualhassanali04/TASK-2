@@ -16,6 +16,9 @@ public static class MappingExtensions
             Price = product.Price,
             Stock = product.Stock,
             CreatedAt = product.CreatedAt,
+            CreatedBy = product.CreatedBy,
+            UpdatedAt = product.UpdatedAt,
+            UpdatedBy = product.UpdatedBy,
             CategoryId = product.CategoryId,
             CategoryName = product.Category?.Name ?? string.Empty
         };
@@ -28,8 +31,7 @@ public static class MappingExtensions
             Name = createProductDto.Name,
             Price = createProductDto.Price,
             Stock = createProductDto.Stock,
-            CategoryId = createProductDto.CategoryId,
-            CreatedAt = DateTime.Now
+            CategoryId = createProductDto.CategoryId
         };
     }
 
@@ -49,7 +51,11 @@ public static class MappingExtensions
         {
             Id = category.Id,
             Name = category.Name,
-            Description = category.Description ?? string.Empty
+            Description = category.Description ?? string.Empty,
+            CreatedAt = category.CreatedAt,
+            CreatedBy = category.CreatedBy,
+            UpdatedAt = category.UpdatedAt,
+            UpdatedBy = category.UpdatedBy
         };
     }
 
